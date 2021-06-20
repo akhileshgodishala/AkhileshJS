@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Expense</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+    integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">Xpers</span>
+        <span class="navbar-brand mb-0 h1" id="headingTotal">Total</span>
+    </nav>
+   
+    <div class="container-fluid bg-light" style="min-height: 100vh">
+        <div class="container">
+   
+    <div class="jumbotron mt-4">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Amount spent" aria-label="Amount spent" id="inputAmount"
+                aria-describedby="spent in rupee" />
+            <div class="input-group-append">
+                <span class="input-group-text" id="spent in rupee">₹</span>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="spent at">@</span>
+            </div>
+            <input type="text" class="form-control" placeholder="spent On" aria-label="spent On"
+                aria-describedby="spent at" id="description" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="button" id="btnAddExpense">Add</button>
+            </div>
+        </div>
+    </div>
+  
+
+    <div>
+        <ul class="list-group" id="expenseTable"></ul>  
+              
+    </div>
+    </div>
+    </div>
+
+    <script>
+        // init value of expense to 0
+        let totalExpense = 0;
+
+        const inputElement = document.querySelector("#inputAmount");
+        const headingEl = document.querySelector("#headingTotal");
+        const val = document.querySelector("#description");
+        const expenseTableEl = document.querySelector("#expenseTable");
+
+        let allExpenses = [];
+
+        //onButtonClick add inputAmount to totalExpense
+        function addExpenseToTotal() {
+
+            const expenseItem = {};
+            const textAmount = inputElement.value;
+            const expense = parseInt(textAmount);
+            const val1 = val.value;
+
+            expenseItem.amount = expense
+            expenseItem.description1 = val1
+            expenseItem.moment= new Date();
+
+            allExpenses.push(expenseItem);
+
+            // console.table(allExpenses)
+
+            totalExpense = totalExpense + expense;
+
+            const tot = `the total amount is: ${totalExpense}`
+            headingEl.textContent = tot;
+
+            /* 
+                           const data1=allExpenses[0]
+                           const data2=allExpenses[1]
+            
+                           const data1text= ` ${data1.amount} ::  ${data1.description}`
+                           const data2text= ` ${data2.amount} ::  ${data2.description}`
+            
+                           const tableText=`
+                           <div>${data1text}</div>
+                           <div>${data2text}</div>
+                            expenseTableEl.innerHTML=tableText
+                           ` */
+
+
+
+            
+
+            // console.log(allExpenseHtml);
+
+            // ::  ${expense1.description1}
+            // console.log((JSON.stringify(allExpenseHtml)));
+
+            // const allExpenseTemp=JSON.stringify(allExpenseHtml)
+
+
+
+
+
+          
+            // console.log(joinedAllExpense)
+
+
+
+            renderList(allExpenses);
+
+
+
+
+
+
+
+        }
+
+        //date logic func
+
+        function getStringDate(momento){
+          return momento.toLocaleDateString('en-US', {year : 'numeric', month : 'long' , day : 'numeric' ,})
+
+        }
+        //Delete icon working func
+
+        function deleteItem(dateValue){
+            console.log("delete func called",dateValue);
+
+            let newArr=[]
+
+            for(let i=0;i<allExpenses.length;i++){
+                if(allExpenses[i].moment.valueOf()!== dateValue){
+                    //console.log("item found", allExpenses[i]);
+                    newArr.push(allExpenses[i]);
+                }
+
+                /*if(allExpenses[i].moment.valueOf()== dateValue){
+                   const red= allExpenses[i].amount
+                    
+                }*/
+              
+            }
+          /*  const allExpenseHtml = newArr.map(expense1 => createListItem(expense1));
+            const joinedAllExpense = allExpenseHtml.join("")
+            expenseTableEl.innerHTML = joinedAllExpense*/
+            renderList(newArr);
+            allExpenses=newArr;
+
+            
+        }
+
+        //Displaying the list of expenses table
+
+        function renderList(arrOfList){
+            const allExpenseHtml = arrOfList.map(expense1 => createListItem(expense1));
+            const joinedAllExpense = allExpenseHtml.join("")
+            expenseTableEl.innerHTML = joinedAllExpense
+        }
+
+        //removing deleted list item
+      
+
+        //view layer
+
+        function createListItem({description1,amount,moment}){
+            return `
+                <li class="list-group-item d-flex justify-content-between">
+                        <div class="d-flex flex-column">
+                            ${description1}
+                            <small class="text-muted">${getStringDate(moment)}</small>
+                        </div>
+                        <div>
+                            <span class="px-5">
+                                ${amount}
+                            </span>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteItem(${moment.valueOf()})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </li>`
+            
+        }
+        // get the button reference
+        const element = document.querySelector("#btnAddExpense");
+        // console.log(element);
+        //add a listener event
+        element.addEventListener("click", addExpenseToTotal, false);
+
+
+
+
+    </script>
+
+</body>
+
+</html>
