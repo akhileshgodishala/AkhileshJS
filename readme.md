@@ -1,1 +1,1 @@
-Expense Tracker Version 1.0
+Expense Tracker Version 1.00
